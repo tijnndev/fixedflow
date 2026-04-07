@@ -78,11 +78,21 @@ Enhancement suggestions are welcome! Please:
 ```
 src/
 ├── components/     # Reusable UI components
-├── screens/        # Full-screen views
-├── services/       # Business logic (storage, etc.)
+├── screens/        # Full-screen views with navigation
+├── services/       # Business logic (storage, categories, etc.)
+├── theme/          # Theme management and context
+├── i18n/           # Internationalization and translations
 ├── types/          # TypeScript type definitions
 └── utils/          # Helper functions and utilities
 ```
+
+### Adding a New Feature
+
+1. **Check the Roadmap**: See [suggestions.md](suggestions.md) for planned features
+2. **Create an Issue**: Discuss major features before implementing
+3. **Follow the Pattern**: Look at existing code for similar functionality
+4. **Update Documentation**: Update README.md and other docs as needed
+5. **Add Translations**: If UI text is involved, add to all language files
 
 ### Component Guidelines
 
@@ -117,42 +127,69 @@ const styles = StyleSheet.create({
 - Use type inference when possible
 - Avoid `any` type
 - Define types in `src/types/`
+- Enable strict mode in tsconfig.json
 
-### Storage
+### Storage & Services
 
-- All data operations go through `storageService`
-- Handle errors gracefully
+- All data operations go through services (`storageService`, `categoriesService`)
+- Handle errors gracefully with try-catch
 - Show user feedback for async operations
+- Use AsyncStorage for persistence
+- Maintain backward compatibility with storage keys
+
+### Internationalization (i18n)
+
+- Add new text to all language files: `en.ts`, `nl.ts`, `fr.ts`, `de.ts`
+- Use the `useI18n` hook for translations
+- Keep translation keys organized and descriptive
+- Test with different languages
+
+### Theme Support
+
+- Use `useTheme` hook for colors
+- Support both light and dark modes
+- Test color contrast for accessibility
+- Use the theme colors consistently
 
 ### UI/UX
 
 - Keep the design clean and minimal
-- Use consistent spacing and colors
+- Use consistent spacing (8px grid system)
 - Ensure good contrast for accessibility
 - Test on different screen sizes
+- Use SafeAreaView for proper insets
+- Add loading states for async operations
+- Provide clear error messages
 
 ## Project Philosophy
 
 When contributing, keep these principles in mind:
 
-1. **Privacy First**: No data leaves the device
-2. **Simplicity**: Easy to use, no complexity
-3. **Offline**: Works without internet
-4. **Open Source**: Transparent and community-driven
+1. **Privacy First**: No data leaves the device, no tracking, no analytics
+2. **Simplicity**: Easy to use, intuitive interface, no complexity
+3. **Offline**: Works without internet, no cloud dependencies
+4. **Open Source**: Transparent, community-driven, well-documented
+5. **Accessibility**: Works for everyone, readable, navigable
+6. **Performance**: Fast, responsive, efficient
 
 ## Feature Ideas
 
-Potential features to contribute:
+See [suggestions.md](suggestions.md) for a comprehensive feature roadmap. Some high-priority items:
 
+- [x] Dark mode ✅
+- [x] Custom categories ✅
+- [x] Multi-language support (EN, NL, FR, DE) ✅
+- [x] Floating action button ✅
+- [x] Safe area support ✅
 - [ ] Data export (CSV/JSON)
 - [ ] Data import
 - [ ] Native date picker
 - [ ] Notification reminders
-- [ ] Custom categories
-- [ ] Dark mode
+- [ ] Payment history tracking
 - [ ] Multiple currency support
-- [ ] Payment history/archive
 - [ ] Search functionality
+- [ ] Budget tracking
+- [ ] Analytics dashboard
 - [ ] Backup to iCloud/Google Drive
 
 ## Questions?

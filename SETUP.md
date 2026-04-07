@@ -40,11 +40,13 @@ yarn install
 ```
 
 This will install all required packages including:
-- React Native
-- Expo
-- React Navigation
-- AsyncStorage
-- TypeScript dependencies
+- React Native 0.83.4
+- Expo SDK 55
+- React Navigation v6
+- AsyncStorage v1.21
+- Safe Area Context v5.3
+- TypeScript 5.3
+- Sharp (for icon generation)
 
 ### 4. Start the Development Server
 
@@ -143,14 +145,17 @@ npx expo start -c
 
 ```
 fixedflow/
-├── App.tsx              # Main entry point
+├── App.tsx              # Main entry point with providers
 ├── src/
-│   ├── components/      # UI components
-│   ├── screens/         # Main screens (List & Agenda)
-│   ├── services/        # Data storage
+│   ├── components/      # UI components (PaymentCard, EmptyState, etc.)
+│   ├── screens/         # Main screens (List, Agenda, Settings)
+│   ├── services/        # Data storage and categories
+│   ├── theme/           # Theme context (dark/light mode)
+│   ├── i18n/            # Internationalization (4 languages)
 │   ├── types/           # TypeScript types
 │   └── utils/           # Helper functions
-├── assets/              # Images and icons
+├── assets/              # Icons and images (PNG + SVG)
+├── scripts/             # Build scripts (icon generation)
 └── package.json         # Dependencies
 ```
 
@@ -159,34 +164,93 @@ fixedflow/
 1. **Try Adding a Payment**
    - Open the app
    - Go to "List" tab
-   - Tap "+ Add Payment"
+   - Tap the blue floating action button (+ icon)
    - Fill in details and save
 
-2. **View the Calendar**
-   - Go to "Agenda" tab
-   - Browse different months
-   - Tap on days to see details
+2. **Explore Settings**
+   - Go to "Settings" tab
+   - Try switching between light/dark theme
+   - Change language (English, Dutch, French, German)
+   - Add or remove custom categories
 
-3. **Start Developing**
+3. **View the Calendar**
+   - Go to "Agenda" tab
+   - Browse different months using arrow buttons
+   - Tap on days with payments to see details
+   - View monthly totals at the top
+
+4. **Start Developing**
    - Make changes to any file
    - Save the file
    - App will automatically reload
-   - See your changes instantly!
+   - See your changes instantly (Fast Refresh)
+
+## Customization Tips
+
+### Change Currency
+Edit `src/utils/recurrence.ts`:
+```typescript
+export const formatCurrency = (amount: number): string => {
+  return `$${amount.toFixed(2)}`; // Change € to your currency
+};
+```
+
+### Add More Languages
+1. Create new translation file in `src/i18n/` (e.g., `es.ts`)
+2. Add to `src/i18n/index.tsx` language options
+3. Follow the pattern from existing language files
+
+### Customize Theme Colors
+Edit `src/theme/ThemeContext.tsx`:
+```typescript
+const lightColors: ThemeColors = {
+  primary: '#your-color',
+  // ... other colors
+};
+```
 
 ## Building for Production
 
-When ready to distribute:
+### Using EAS Build (Recommended)
 
 ```bash
-# iOS (requires Mac)
-npx expo build:ios
-
-# Android
-npx expo build:android
-
-# Or use EAS Build (recommended)
+# Install EAS CLI globally
 npm install -g eas-cli
-eas build
+
+# Login to Expo account
+eas login
+
+# Configure your project
+eas build:configure
+
+# Build for Android
+eas build --platform android
+
+# Build for iOS (requires Apple Developer account)
+eas build --platform ios
+
+# Build for both
+eas build --platform all
+```
+
+### Local Builds
+
+```bash
+# Generate Android APK locally
+npx expo build:android -t apk
+
+# Generate iOS IPA (Mac only, requires Apple Developer account)
+npx expo build:ios
+```
+
+### Web Deployment
+
+```bash
+# Build web version
+npx expo export:web
+
+# Output will be in web-build/ directory
+# Deploy to any static hosting service (Netlify, Vercel, GitHub Pages)
 ```
 
 See [Expo documentation](https://docs.expo.dev/distribution/introduction/) for detailed build instructions.

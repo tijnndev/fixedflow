@@ -2,11 +2,14 @@
 
 <div align="center">
 
+![FixedFlow Logo](assets/logo.svg)
+
 📱 **A simple, offline-first personal finance app for tracking recurring payments**
 
-![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android-blue)
+![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android%20%7C%20Web-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Made with Expo](https://img.shields.io/badge/Made%20with-Expo-000020?logo=expo)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
 
 </div>
 
@@ -17,19 +20,31 @@ FixedFlow is a clean, minimal mobile app designed to help you track and visualiz
 ### ✨ Features
 
 - **📋 List View**: Manage all your recurring payments in one place
-  - Add, edit, and delete payments
+  - Add, edit, and delete payments with a floating action button
   - Quick overview of all subscriptions
   - Sort and organize by category
+  - Pull to refresh
+  - Empty state with helpful prompts
 
 - **📅 Agenda View**: Calendar-style monthly overview
   - Visualize payments on their due dates
-  - Navigate between months
+  - Navigate between months with smooth transitions
   - See daily and monthly totals
   - Highlight days with payments
+  - Tap days to see payment details
+  - Color-coded calendar interface
+
+- **⚙️ Settings & Customization**
+  - **🎨 Dark Mode**: Choose between Light, Dark, or System theme
+  - **🌍 Multi-Language Support**: English, Dutch, French, and German
+  - **📂 Custom Categories**: Create, edit, and delete payment categories
+  - **💾 Persistent Preferences**: All settings saved locally
 
 - **💾 Fully Offline**: All data stored locally using AsyncStorage
 - **🔒 Privacy First**: No backend, no tracking, no data collection
-- **🎨 Clean UI**: Simple, intuitive design focused on usability
+- **🎨 Modern UI**: Clean, intuitive design with smooth animations
+- **📱 Responsive**: Works on phones and tablets
+- **♿ Accessible**: Safe area support for notched devices
 - **💶 EUR Currency**: Built for European users (easily customizable)
 
 ## 🚀 Getting Started
@@ -74,16 +89,45 @@ FixedFlow is a clean, minimal mobile app designed to help you track and visualiz
 ### Adding a Payment
 
 1. Navigate to the **List** tab
-2. Tap **"+ Add Payment"**
+2. Tap the **blue floating action button** (+ icon) at the bottom
 3. Fill in the details:
    - **Name**: e.g., "Netflix subscription"
    - **Amount**: in EUR (e.g., 15.99)
    - **Frequency**: Monthly, Quarterly, or Yearly
    - **Due Day**: Day of month (1-31)
    - **Start Date**: When this payment started (determines quarterly/yearly schedule)
-   - **Category** (optional): e.g., Subscriptions, Insurance
+   - **Category**: Choose from default or custom categories
 
 4. Tap **Save**
+
+### Managing Categories
+
+1. Go to the **Settings** tab
+2. Scroll to **Categories** section
+3. **Add Custom Category**: 
+   - Tap "+ Add Category"
+   - Enter category name
+   - Tap the checkmark to save
+4. **Delete Category**:
+   - Tap the trash icon next to any category
+   - Default categories (Rent, Subscriptions, etc.) can also be deleted
+
+### Changing Theme
+
+1. Go to **Settings** tab
+2. Under **Appearance**, choose:
+   - **Light**: Always use light theme
+   - **Dark**: Always use dark theme
+   - **System**: Follow device settings
+
+### Changing Language
+
+1. Go to **Settings** tab
+2. Under **Language**, select:
+   - **English** (EN)
+   - **Nederlands** (NL)
+   - **Français** (FR)
+   - **Deutsch** (DE)
 
 ### Editing or Deleting
 
@@ -96,6 +140,7 @@ FixedFlow is a clean, minimal mobile app designed to help you track and visualiz
 2. Use **‹ › buttons** to navigate between months
 3. Tap any **highlighted day** to see payments due that day
 4. View **monthly total** at the top of the screen
+5. Days with payments are highlighted in blue
 
 ## 🔄 Recurrence Logic
 
@@ -121,39 +166,68 @@ FixedFlow uses a clear, predictable system for recurring payments:
 
 ```
 fixedflow/
-├── App.tsx                      # Main app component with navigation
+├── App.tsx                          # Main app component with navigation setup
 ├── src/
-│   ├── components/              # Reusable UI components
-│   │   ├── EmptyState.tsx      # Empty state placeholder
-│   │   ├── PaymentCard.tsx     # Payment item display
-│   │   └── PaymentFormModal.tsx # Add/edit payment form
+│   ├── components/                  # Reusable UI components
+│   │   ├── EmptyState.tsx          # Empty state placeholder with SVG icons
+│   │   ├── PaymentCard.tsx         # Payment item display with i18n
+│   │   └── PaymentFormModal.tsx    # Add/edit payment form with validation
 │   │
-│   ├── screens/                 # Main screens
-│   │   ├── ListScreen.tsx      # List view with all payments
-│   │   └── AgendaScreen.tsx    # Calendar view
+│   ├── screens/                     # Main screens with safe area support
+│   │   ├── ListScreen.tsx          # List view with floating action button
+│   │   ├── AgendaScreen.tsx        # Calendar view with month navigation
+│   │   └── SettingsScreen.tsx      # Settings with theme, language, categories
 │   │
-│   ├── services/                # Business logic
-│   │   └── storage.ts          # AsyncStorage operations
+│   ├── services/                    # Business logic
+│   │   ├── storage.ts              # AsyncStorage operations for payments
+│   │   └── categories.ts           # Category management service
 │   │
-│   ├── types/                   # TypeScript definitions
-│   │   └── payment.ts          # Data models
+│   ├── theme/                       # Theme management
+│   │   └── ThemeContext.tsx        # Dark/light/system theme with persistence
 │   │
-│   └── utils/                   # Helper functions
-│       └── recurrence.ts       # Recurrence calculation logic
+│   ├── i18n/                        # Internationalization
+│   │   ├── index.tsx               # Language provider and context
+│   │   ├── en.ts                   # English translations
+│   │   ├── nl.ts                   # Dutch translations
+│   │   ├── fr.ts                   # French translations
+│   │   └── de.ts                   # German translations
+│   │
+│   ├── types/                       # TypeScript definitions
+│   │   └── payment.ts              # Data models and interfaces
+│   │
+│   └── utils/                       # Helper functions
+│       └── recurrence.ts           # Recurrence calculation logic
+│
+├── assets/                          # App assets
+│   ├── icon.png                    # App icon (1024x1024)
+│   ├── adaptive-icon.png           # Android adaptive icon
+│   ├── splash.png                  # Splash screen
+│   ├── favicon.png                 # Web favicon
+│   └── *.svg                       # Source SVG files
+│
+├── scripts/                         # Build and utility scripts
+│   └── generate-icons.js           # PNG icon generation from SVG
 │
 ├── package.json
-├── app.json                     # Expo configuration
-├── tsconfig.json               # TypeScript configuration
-└── README.md
+├── app.json                         # Expo configuration
+├── tsconfig.json                    # TypeScript configuration
+├── README.md                        # This file
+├── SETUP.md                         # Quick setup guide
+├── CONTRIBUTING.md                  # Contribution guidelines
+├── suggestions.md                   # Feature suggestions and roadmap
+└── LICENSE
 ```
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [React Native](https://reactnative.dev/) with [Expo](https://expo.dev/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Navigation**: [React Navigation](https://reactnavigation.org/)
-- **Storage**: [@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage)
-- **Icons**: [@expo/vector-icons](https://docs.expo.dev/guides/icons/)
+- **Framework**: [React Native](https://reactnative.dev/) with [Expo](https://expo.dev/) SDK 55
+- **Language**: [TypeScript](https://www.typescriptlang.org/) 5.3
+- **Navigation**: [React Navigation](https://reactnavigation.org/) v6 with bottom tabs
+- **Storage**: [@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage) v1.21
+- **Icons**: [@expo/vector-icons](https://docs.expo.dev/guides/icons/) (Ionicons)
+- **Safe Area**: [react-native-safe-area-context](https://github.com/th3rdwave/react-native-safe-area-context) v5.3
+- **Screens**: [react-native-screens](https://github.com/software-mansion/react-native-screens) v4.10
+- **Build Tools**: [Sharp](https://sharp.pixelplumbing.com/) for icon generation
 
 ## 🤝 Contributing
 
@@ -177,10 +251,14 @@ Contributions are welcome! This is an open-source project designed to help peopl
 
 ## 🐛 Known Issues & Limitations
 
-- **Date Picker**: Currently uses text input for start date. A native date picker would improve UX.
-- **Notifications**: No reminder notifications (could be added in future)
-- **Backup**: No cloud backup feature (data is device-only)
-- **Export**: No data export functionality yet
+- **Currency**: Currently hardcoded to EUR (€) - multi-currency support planned
+- **Notifications**: No reminder notifications yet - see [suggestions.md](suggestions.md)
+- **Cloud Backup**: No cloud backup feature (data is device-only) - planned feature
+- **Export**: No data export functionality yet - coming soon
+- **Payment History**: Cannot mark individual payments as paid/skipped - in roadmap
+- **Category Deletion**: Minor UI refresh issue on web platform (works on mobile)
+
+See [suggestions.md](suggestions.md) for the full feature roadmap and planned improvements.
 
 ## 📄 License
 
