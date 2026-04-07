@@ -8,7 +8,7 @@ import {
   Alert,
   RefreshControl,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { RecurringPayment } from '../types/payment';
 import { storageService } from '../services/storage';
@@ -22,6 +22,7 @@ import { Ionicons } from '@expo/vector-icons';
 export const ListScreen: React.FC = () => {
   const { colors, isDark } = useTheme();
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
   const styles = getStyles(colors, isDark);
   const [payments, setPayments] = useState<RecurringPayment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,7 +106,7 @@ export const ListScreen: React.FC = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.title}>{t.list.title}</Text>
       </View>
@@ -141,7 +142,7 @@ export const ListScreen: React.FC = () => {
         }}
         onSave={handleSavePayment}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

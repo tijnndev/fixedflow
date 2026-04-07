@@ -253,10 +253,8 @@ Contributions are welcome! This is an open-source project designed to help peopl
 
 - **Currency**: Currently hardcoded to EUR (€) - multi-currency support planned
 - **Notifications**: No reminder notifications yet - see [suggestions.md](suggestions.md)
-- **Cloud Backup**: No cloud backup feature (data is device-only) - planned feature
 - **Export**: No data export functionality yet - coming soon
 - **Payment History**: Cannot mark individual payments as paid/skipped - in roadmap
-- **Category Deletion**: Minor UI refresh issue on web platform (works on mobile)
 
 See [suggestions.md](suggestions.md) for the full feature roadmap and planned improvements.
 

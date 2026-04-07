@@ -8,7 +8,7 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme, ThemeType, ThemeColors } from '../theme/ThemeContext';
 import { useI18n, Language } from '../i18n';
@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 export const SettingsScreen: React.FC = () => {
   const { colors, isDark, theme, setTheme } = useTheme();
   const { language, t, setLanguage } = useI18n();
+  const insets = useSafeAreaInsets();
   const styles = getStyles(colors, isDark);
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -99,7 +100,7 @@ export const SettingsScreen: React.FC = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.title}>{t.settings.title}</Text>
       </View>
@@ -198,7 +199,7 @@ export const SettingsScreen: React.FC = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

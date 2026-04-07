@@ -7,7 +7,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { RecurringPayment, PaymentOccurrence } from '../types/payment';
 import { storageService } from '../services/storage';
@@ -30,6 +30,7 @@ import { ThemeColors } from '../theme/ThemeContext';
 export const AgendaScreen: React.FC = () => {
   const { colors, isDark } = useTheme();
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
   const styles = getStyles(colors, isDark);
   const [payments, setPayments] = useState<RecurringPayment[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -202,7 +203,7 @@ export const AgendaScreen: React.FC = () => {
 
   if (payments.length === 0) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <Text style={styles.title}>{t.agenda.title}</Text>
         </View>
@@ -210,12 +211,12 @@ export const AgendaScreen: React.FC = () => {
           title={t.agenda.emptyTitle}
           message={t.agenda.emptyMessage}
         />
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.title}>{t.agenda.title}</Text>
         
@@ -241,7 +242,7 @@ export const AgendaScreen: React.FC = () => {
         {renderCalendar()}
         {renderSelectedDayPayments()}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

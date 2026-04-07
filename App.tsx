@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ListScreen } from './src/screens/ListScreen';
 import { AgendaScreen } from './src/screens/AgendaScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
@@ -14,6 +14,10 @@ const Tab = createBottomTabNavigator();
 function AppContent() {
   const { colors, isDark } = useTheme();
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
+
+  // Calculate safe area padding for tab bar
+  const bottomPadding = Math.max(insets.bottom, 8);
 
   return (
     <NavigationContainer theme={{
@@ -36,9 +40,9 @@ function AppContent() {
             backgroundColor: colors.card,
             borderTopWidth: 1,
             borderTopColor: colors.border,
-            paddingBottom: 8,
+            paddingBottom: bottomPadding,
             paddingTop: 8,
-            height: 60,
+            height: 60 + bottomPadding,
           },
           tabBarLabelStyle: {
             fontSize: 12,
