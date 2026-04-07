@@ -1,0 +1,19 @@
+<svg width="108" height="108" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- This is the foreground layer for adaptive icon -->
+  <!-- Flowing lines -->
+  <path d="M 20 37 Q 32 26, 42 37 T 63 37 T 84 37" 
+        stroke="white" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.3"/>
+  
+  <path d="M 20 50 Q 32 39, 42 50 T 63 50 T 84 50" 
+        stroke="white" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.5"/>
+  
+  <path d="M 20 63 Q 32 52, 42 63 T 63 63 T 84 63" 
+        stroke="white" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.8"/>
+  
+  <!-- Dollar symbol -->
+  <g transform="translate(54, 54)">
+    <path d="M -5 -15 Q -15 -15, -15 -7 Q -15 0, -5 0 Q 5 0, 5 7 Q 5 15, -5 15" 
+          stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <line x1="0" y1="-19" x2="0" y2="19" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+</svg>

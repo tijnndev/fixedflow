@@ -1,0 +1,23 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="#4F46E5"/>
+  
+  <!-- Flowing waves representing recurring payments -->
+  <path d="M 120 200 Q 160 160, 200 200 T 280 200 T 360 200" 
+        stroke="#ffffff" stroke-width="24" fill="none" stroke-linecap="round" opacity="0.4"/>
+  
+  <path d="M 120 256 Q 160 216, 200 256 T 280 256 T 360 256" 
+        stroke="#ffffff" stroke-width="24" fill="none" stroke-linecap="round" opacity="0.6"/>
+  
+  <path d="M 120 312 Q 160 272, 200 312 T 280 312 T 360 312" 
+        stroke="#ffffff" stroke-width="24" fill="none" stroke-linecap="round" opacity="0.9"/>
+  
+  <!-- Dollar sign overlay -->
+  <g transform="translate(256, 256)">
+    <!-- S shape -->
+    <path d="M -20 -60 Q -60 -60, -60 -30 Q -60 0, -20 0 Q 20 0, 20 30 Q 20 60, -20 60" 
+          stroke="#ffffff" stroke-width="20" fill="none" stroke-linecap="round"/>
+    <!-- Vertical line -->
+    <line x1="0" y1="-80" x2="0" y2="80" stroke="#ffffff" stroke-width="16" stroke-linecap="round"/>
+  </g>
+</svg>

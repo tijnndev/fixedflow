@@ -1,0 +1,28 @@
+<svg width="1284" height="2778" viewBox="0 0 1284 2778" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Splash screen background -->
+  <rect width="1284" height="2778" fill="#4F46E5"/>
+  
+  <!-- Centered logo -->
+  <g transform="translate(642, 1389)">
+    <!-- Flowing lines -->
+    <path d="M -300 -150 Q -200 -250, -100 -150 T 100 -150 T 300 -150" 
+          stroke="white" stroke-width="30" fill="none" stroke-linecap="round" opacity="0.3"/>
+    
+    <path d="M -300 0 Q -200 -100, -100 0 T 100 0 T 300 0" 
+          stroke="white" stroke-width="30" fill="none" stroke-linecap="round" opacity="0.5"/>
+    
+    <path d="M -300 150 Q -200 50, -100 150 T 100 150 T 300 150" 
+          stroke="white" stroke-width="30" fill="none" stroke-linecap="round" opacity="0.8"/>
+    
+    <!-- Dollar symbol -->
+    <g>
+      <path d="M -40 -110 Q -110 -110, -110 -55 Q -110 0, -40 0 Q 40 0, 40 55 Q 40 110, -40 110" 
+            stroke="white" stroke-width="40" fill="none" stroke-linecap="round"/>
+      <line x1="0" y1="-140" x2="0" y2="140" stroke="white" stroke-width="35" stroke-linecap="round"/>
+    </g>
+    
+    <!-- App name -->
+    <text x="0" y="280" fill="white" font-size="72" font-family="system-ui, -apple-system, sans-serif" 
+          font-weight="600" text-anchor="middle">FixedFlow</text>
+  </g>
+</svg>

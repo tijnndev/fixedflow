@@ -1,0 +1,21 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main background -->
+  <rect width="1024" height="1024" rx="220" fill="#4F46E5"/>
+  
+  <!-- Flowing lines -->
+  <path d="M 200 350 Q 300 250, 400 350 T 600 350 T 800 350" 
+        stroke="white" stroke-width="40" fill="none" stroke-linecap="round" opacity="0.3"/>
+  
+  <path d="M 200 470 Q 300 370, 400 470 T 600 470 T 800 470" 
+        stroke="white" stroke-width="40" fill="none" stroke-linecap="round" opacity="0.5"/>
+  
+  <path d="M 200 590 Q 300 490, 400 590 T 600 590 T 800 590" 
+        stroke="white" stroke-width="40" fill="none" stroke-linecap="round" opacity="0.8"/>
+  
+  <!-- Dollar symbol -->
+  <g transform="translate(512, 512)">
+    <path d="M -50 -140 Q -140 -140, -140 -70 Q -140 0, -50 0 Q 50 0, 50 70 Q 50 140, -50 140" 
+          stroke="white" stroke-width="50" fill="none" stroke-linecap="round"/>
+    <line x1="0" y1="-180" x2="0" y2="180" stroke="white" stroke-width="45" stroke-linecap="round"/>
+  </g>
+</svg>
