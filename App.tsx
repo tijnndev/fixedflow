@@ -47,6 +47,7 @@ function AppContent() {
           tabBarLabelStyle: {
             fontSize: 12,
             fontWeight: '600',
+            paddingBottom: 5,
           },
         }}
       >
