@@ -8,6 +8,7 @@ import { AgendaScreen } from './src/screens/AgendaScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { I18nProvider, useI18n } from './src/i18n';
+import { BiometricLock } from './src/components/BiometricLock';
 
 const Tab = createBottomTabNavigator();
 
@@ -47,7 +48,7 @@ function AppContent() {
           tabBarLabelStyle: {
             fontSize: 12,
             fontWeight: '600',
-            paddingBottom: 5,
+            paddingBottom: 10,
           },
         }}
       >
@@ -91,7 +92,9 @@ export default function App() {
     <SafeAreaProvider>
       <I18nProvider>
         <ThemeProvider>
-          <AppContent />
+          <BiometricLock>
+            <AppContent />
+          </BiometricLock>
         </ThemeProvider>
       </I18nProvider>
     </SafeAreaProvider>

@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import {
   View,
@@ -7,12 +8,17 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  Modal,
+  FlatList,
+  Switch,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme, ThemeType, ThemeColors } from '../theme/ThemeContext';
 import { useI18n, Language } from '../i18n';
 import { categoriesService } from '../services/categories';
+import { currencyService, Currency, CURRENCIES } from '../services/currency';
+import { biometricService } from '../services/biometric';
 import { Ionicons } from '@expo/vector-icons';
 
 export const SettingsScreen: React.FC = () => {
@@ -24,22 +30,67 @@ export const SettingsScreen: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState('');
   const [showCategoryInput, setShowCategoryInput] = useState(false);
+  const [currency, setCurrencyState] = useState<Currency>(CURRENCIES[0]);
+  const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricType, setBiometricType] = useState('Biometric');
 
-  const loadCategories = async () => {
+  const loadSettings = async () => {
     try {
-      console.log('loadCategories called');
       const allCategories = await categoriesService.getAllCategories();
-      console.log('Loaded categories:', allCategories);
       setCategories(allCategories);
-      console.log('State updated');
+      
+      const selectedCurrency = await currencyService.getCurrency();
+      setCurrencyState(selectedCurrency);
+
+      // Load biometric settings
+      const available = await biometricService.isAvailable();
+      setBiometricAvailable(available);
+      if (available) {
+        const enabled = await biometricService.isEnabled();
+        setBiometricEnabled(enabled);
+        const type = await biometricService.getBiometricTypeName();
+        setBiometricType(type);
+      }
     } catch (error) {
       Alert.alert(t.error.title, t.error.loadSettings);
     }
   };
 
+  const handleBiometricToggle = async (value: boolean) => {
+    if (!biometricAvailable) {
+      Alert.alert(t.error.title, t.settings.biometricNotAvailable);
+      return;
+    }
+
+    if (value) {
+      // Enabling - authenticate first
+      const success = await biometricService.authenticate(`Enable ${biometricType} Authentication`);
+      if (success) {
+        await biometricService.setEnabled(true);
+        setBiometricEnabled(true);
+      }
+    } else {
+      // Disabling
+      await biometricService.setEnabled(false);
+      setBiometricEnabled(false);
+    }
+  };
+
+  const handleCurrencyChange = async (selectedCurrency: Currency) => {
+    try {
+      await currencyService.setCurrency(selectedCurrency.code);
+      setCurrencyState(selectedCurrency);
+      setShowCurrencyPicker(false);
+    } catch (error) {
+      Alert.alert(t.error.title, t.error.saveSettings);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      loadCategories();
+      loadSettings();
     }, [])
   );
 
@@ -53,22 +104,17 @@ export const SettingsScreen: React.FC = () => {
       await categoriesService.addCategory(newCategory);
       setNewCategory('');
       setShowCategoryInput(false);
-      await loadCategories();
+      await loadSettings();
     } catch (error: any) {
       Alert.alert(t.error.title, error.message || t.error.saveSettings);
     }
   };
 
   const handleDeleteCategory = async (category: string) => {
-    console.log('handleDeleteCategory called with:', category);
-    
     // Simple direct delete for debugging - we'll add confirmation back later
     try {
-      console.log('Calling deleteCategory service...');
       await categoriesService.deleteCategory(category);
-      console.log('Service returned, reloading...');
-      await loadCategories();
-      console.log('Reload complete');
+      await loadSettings();
     } catch (error) {
       console.error('Error deleting category:', error);
       Alert.alert(t.error.title, t.error.saveSettings);
@@ -130,6 +176,49 @@ export const SettingsScreen: React.FC = () => {
               <LanguageOption value="nl" label="Nederlands" />
               <LanguageOption value="fr" label="Français" />
               <LanguageOption value="de" label="Deutsch" />
+            </View>
+          </View>
+        </View>
+
+        {/* Currency Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t.settings.currency}</Text>
+          
+          <View style={styles.settingGroup}>
+            <TouchableOpacity
+              style={styles.currencySelector}
+              onPress={() => setShowCurrencyPicker(true)}
+            >
+              <View style={styles.currencyInfo}>
+                <Text style={styles.currencySymbol}>{currency.symbol}</Text>
+                <Text style={styles.currencyName}>{currency.name}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Security Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t.settings.security}</Text>
+          
+          <View style={styles.settingGroup}>
+            <View style={styles.biometricSetting}>
+              <View style={styles.biometricInfo}>
+                <Text style={styles.settingLabel}>{t.settings.biometricAuth}</Text>
+                <Text style={styles.settingDescription}>
+                  {biometricAvailable 
+                    ? t.settings.biometricAuthDesc
+                    : t.settings.biometricNotAvailable}
+                </Text>
+              </View>
+              <Switch
+                value={biometricEnabled}
+                onValueChange={handleBiometricToggle}
+                disabled={!biometricAvailable}
+                trackColor={{ false: colors.border, true: colors.primary }}
+                thumbColor={biometricEnabled ? '#fff' : colors.textSecondary}
+              />
             </View>
           </View>
         </View>
@@ -199,6 +288,46 @@ export const SettingsScreen: React.FC = () => {
           </View>
         </View>
       </ScrollView>
+
+      {/* Currency Picker Modal */}
+      <Modal
+        visible={showCurrencyPicker}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowCurrencyPicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { paddingBottom: insets.bottom }]}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t.settings.selectCurrency}</Text>
+              <TouchableOpacity onPress={() => setShowCurrencyPicker(false)}>
+                <Ionicons name="close" size={24} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={CURRENCIES}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    styles.currencyOption,
+                    currency.code === item.code && styles.currencyOptionSelected,
+                  ]}
+                  onPress={() => handleCurrencyChange(item)}
+                >
+                  <View style={styles.currencyOptionContent}>
+                    <Text style={styles.currencyOptionSymbol}>{item.symbol}</Text>
+                    <Text style={styles.currencyOptionName}>{item.name}</Text>
+                  </View>
+                  {currency.code === item.code && (
+                    <Ionicons name="checkmark" size={24} color={colors.primary} />
+                  )}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -373,5 +502,88 @@ const getStyles = (colors: ThemeColors, isDark: boolean) => StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#fff',
+  },
+  currencySelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.card,
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  currencyInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  currencySymbol: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: colors.primary,
+  },
+  currencyName: {
+    fontSize: 16,
+    color: colors.text,
+  },
+  biometricSetting: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 16,
+  },
+  biometricInfo: {
+    flex: 1,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: colors.overlay,
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: colors.card,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  currencyOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  currencyOptionSelected: {
+    backgroundColor: colors.highlight,
+  },
+  currencyOptionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  currencyOptionSymbol: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.primary,
+    minWidth: 40,
+  },
+  currencyOptionName: {
+    fontSize: 16,
+    color: colors.text,
   },
 });

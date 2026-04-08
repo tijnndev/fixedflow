@@ -10,6 +10,7 @@ import {
   Alert,
   Platform,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RecurringPayment, Frequency } from '../types/payment';
 import { useTheme, ThemeColors } from '../theme/ThemeContext';
 import { useI18n } from '../i18n';
@@ -30,6 +31,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
 }) => {
   const { colors, isDark } = useTheme();
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
   const styles = getStyles(colors, isDark);
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -78,7 +80,9 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
       return;
     }
 
-    const amountNum = parseFloat(amount);
+    // Handle both comma and dot as decimal separator
+    const normalizedAmount = amount.replace(',', '.');
+    const amountNum = parseFloat(normalizedAmount);
     if (isNaN(amountNum) || amountNum <= 0) {
       Alert.alert(t.validation.errorTitle, t.validation.amountInvalid);
       return;
@@ -213,7 +217,7 @@ export const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               </View>
             </View>
 
-            <View style={styles.buttonRow}>
+            <View style={[styles.buttonRow, { paddingBottom: Math.max(insets.bottom, 16) }]}>
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton]}
                 onPress={onClose}

@@ -1,4 +1,5 @@
 import { RecurringPayment, PaymentOccurrence } from '../types/payment';
+import { currencyService } from '../services/currency';
 
 /**
  * Recurrence Logic:
@@ -118,10 +119,23 @@ export function calculateDailyTotal(occurrences: PaymentOccurrence[]): number {
 }
 
 /**
- * Format currency in EUR
+ * Format currency (async - fetches user's selected currency)
  */
-export function formatCurrency(amount: number): string {
-  return `€${amount.toFixed(2)}`;
+export async function formatCurrency(amount: number): Promise<string> {
+  return await currencyService.formatCurrency(amount);
+}
+
+/**
+ * Format currency synchronously with a specific currency
+ */
+export function formatCurrencySync(amount: number, currencySymbol: string, currencyCode: string): string {
+  const symbolAtEnd = ['SEK', 'NOK', 'DKK', 'CZK', 'HUF', 'RON'];
+  
+  if (symbolAtEnd.includes(currencyCode)) {
+    return `${amount.toFixed(2)} ${currencySymbol}`;
+  }
+  
+  return `${currencySymbol}${amount.toFixed(2)}`;
 }
 
 /**

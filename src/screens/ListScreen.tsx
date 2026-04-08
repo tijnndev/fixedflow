@@ -17,17 +17,20 @@ import { PaymentFormModal } from '../components/PaymentFormModal';
 import { EmptyState } from '../components/EmptyState';
 import { useTheme, ThemeColors } from '../theme/ThemeContext';
 import { useI18n } from '../i18n';
+import { useCurrency } from '../hooks/useCurrency';
 import { Ionicons } from '@expo/vector-icons';
 
 export const ListScreen: React.FC = () => {
   const { colors, isDark } = useTheme();
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
+  const { reloadCurrency } = useCurrency();
   const styles = getStyles(colors, isDark);
   const [payments, setPayments] = useState<RecurringPayment[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingPayment, setEditingPayment] = useState<RecurringPayment | null>(null);
+  const [currencyVersion, setCurrencyVersion] = useState(0);
 
   const loadPayments = async () => {
     try {
@@ -45,6 +48,8 @@ export const ListScreen: React.FC = () => {
   useFocusEffect(
     useCallback(() => {
       loadPayments();
+      reloadCurrency();
+      setCurrencyVersion(prev => prev + 1);
     }, [])
   );
 
@@ -99,6 +104,7 @@ export const ListScreen: React.FC = () => {
 
   const renderPayment = ({ item }: { item: RecurringPayment }) => (
     <PaymentCard
+      key={`${item.id}-${currencyVersion}`}
       payment={item}
       onEdit={() => handleEditPayment(item)}
       onDelete={() => handleDeletePayment(item)}

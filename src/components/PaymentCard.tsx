@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { RecurringPayment } from '../types/payment';
-import { formatCurrency } from '../utils/recurrence';
 import { useTheme, ThemeColors } from '../theme/ThemeContext';
 import { useI18n } from '../i18n';
+import { useCurrency } from '../hooks/useCurrency';
 
 interface PaymentCardProps {
   payment: RecurringPayment;
@@ -22,6 +22,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
 }) => {
   const { colors, isDark } = useTheme();
   const { t } = useI18n();
+  const { formatCurrency } = useCurrency();
   const styles = getStyles(colors, isDark);
 
   const FREQUENCY_LABELS = {

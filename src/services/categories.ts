@@ -42,13 +42,10 @@ export const categoriesService = {
           // Clean up old keys
           await AsyncStorage.removeItem(OLD_CUSTOM_CATEGORIES_KEY);
           await AsyncStorage.removeItem(OLD_HIDDEN_CATEGORIES_KEY);
-          
-          console.log('Migrated categories from old system:', categoriesToSave);
         }
         
         await AsyncStorage.setItem(CATEGORIES_KEY, JSON.stringify(categoriesToSave));
         await AsyncStorage.setItem(INITIALIZED_KEY, 'true');
-        console.log('Categories initialized:', categoriesToSave);
       }
     } catch (error) {
       console.error('Error initializing categories:', error);
@@ -93,12 +90,8 @@ export const categoriesService = {
    * Delete a category
    */
   async deleteCategory(category: string): Promise<void> {
-    console.log('deleteCategory called with:', category);
     const categories = await this.getAllCategories();
-    console.log('Current categories:', categories);
     const filtered = categories.filter(cat => cat !== category);
-    console.log('Filtered categories:', filtered);
     await AsyncStorage.setItem(CATEGORIES_KEY, JSON.stringify(filtered));
-    console.log('Categories saved to AsyncStorage');
   },
 };

@@ -55,7 +55,7 @@
 - End date for recurring payments
 
 ### 9. **Currency Support**
-- Multi-currency support
+- ~~Multi-currency support~~
 - Currency conversion
 - Default currency setting per payment
 - Exchange rate display
@@ -100,7 +100,7 @@
 - Category auto-suggestion based on payment name
 
 ### 16. **Security**
-- Biometric authentication (Face ID, Touch ID, fingerprint)
+- ~~Biometric authentication (Face ID, Touch ID, fingerprint)~~
 - PIN code protection
 - Data encryption
 - Privacy mode (hide amounts)

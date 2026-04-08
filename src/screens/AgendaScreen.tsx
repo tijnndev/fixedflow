@@ -15,7 +15,6 @@ import {
   getPaymentsByDay,
   calculateMonthlyTotal,
   calculateDailyTotal,
-  formatCurrency,
   getDaysInMonth,
   getMonthName,
 } from '../utils/recurrence';
@@ -24,6 +23,7 @@ import { EmptyState } from '../components/EmptyState';
 import { useTheme } from '../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useI18n } from '../i18n';
+import { useCurrency } from '../hooks/useCurrency';
 
 import { ThemeColors } from '../theme/ThemeContext';
 
@@ -31,10 +31,12 @@ export const AgendaScreen: React.FC = () => {
   const { colors, isDark } = useTheme();
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
+  const { formatCurrency, reloadCurrency } = useCurrency();
   const styles = getStyles(colors, isDark);
   const [payments, setPayments] = useState<RecurringPayment[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [currencyVersion, setCurrencyVersion] = useState(0);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -51,6 +53,8 @@ export const AgendaScreen: React.FC = () => {
   useFocusEffect(
     useCallback(() => {
       loadPayments();
+      reloadCurrency();
+      setCurrencyVersion(prev => prev + 1);
     }, [])
   );
 
@@ -191,7 +195,7 @@ export const AgendaScreen: React.FC = () => {
         <ScrollView style={styles.selectedDayPayments}>
           {dayPayments.map((occurrence, index) => (
             <PaymentCard
-              key={`${occurrence.payment.id}-${index}`}
+              key={`${occurrence.payment.id}-${index}-${currencyVersion}`}
               payment={occurrence.payment}
               showActions={false}
             />
