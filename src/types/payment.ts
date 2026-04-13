@@ -1,4 +1,13 @@
-export type Frequency = 'monthly' | 'quarterly' | 'yearly';
+export type Frequency = 'monthly' | 'quarterly' | 'yearly' | 'installments';
+
+export type PaymentStatus = 'pending' | 'paid' | 'skipped';
+
+export interface PaymentOccurrenceStatus {
+  paymentId: string;
+  date: string; // YYYY-MM-DD format
+  status: PaymentStatus;
+  markedAt?: string; // ISO timestamp when status was set
+}
 
 export interface RecurringPayment {
   id: string;
@@ -15,4 +24,5 @@ export interface RecurringPayment {
 export interface PaymentOccurrence {
   payment: RecurringPayment;
   date: Date;
+  status?: PaymentStatus; // Runtime status for this occurrence
 }

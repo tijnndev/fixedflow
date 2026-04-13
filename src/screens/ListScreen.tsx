@@ -19,6 +19,7 @@ import { useTheme, ThemeColors } from '../theme/ThemeContext';
 import { useI18n } from '../i18n';
 import { useCurrency } from '../hooks/useCurrency';
 import { Ionicons } from '@expo/vector-icons';
+import { notificationService } from '../services/notification';
 
 export const ListScreen: React.FC = () => {
   const { colors, isDark } = useTheme();
@@ -38,6 +39,9 @@ export const ListScreen: React.FC = () => {
       // Sort by name
       const sorted = data.sort((a, b) => a.name.localeCompare(b.name));
       setPayments(sorted);
+      
+      // Schedule notifications for all payments
+      await notificationService.scheduleAllPaymentNotifications(sorted);
     } catch (error) {
       Alert.alert(t.error.title, t.error.loadPayments);
     } finally {

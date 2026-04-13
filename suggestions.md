@@ -45,7 +45,6 @@
 ### 7. **Payment Templates**
 - Save frequently used payment configurations
 - Quick add from templates
-- Template categories (utilities, subscriptions, loans, etc.)
 
 ### 8. **Advanced Recurrence Options**
 - Every X weeks/months
@@ -53,12 +52,6 @@
 - Quarterly, semi-annual payments
 - Custom recurrence patterns (e.g., "last Friday of month")
 - End date for recurring payments
-
-### 9. **Currency Support**
-- ~~Multi-currency support~~
-- Currency conversion
-- Default currency setting per payment
-- Exchange rate display
 
 ### 10. **Search & Filter**
 - Global search for payments

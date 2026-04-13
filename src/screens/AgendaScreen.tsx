@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { RecurringPayment, PaymentOccurrence } from '../types/payment';
+import { RecurringPayment, PaymentOccurrence, PaymentStatus } from '../types/payment';
 import { storageService } from '../services/storage';
 import {
   getPaymentsByDay,
@@ -24,6 +24,8 @@ import { useTheme } from '../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useI18n } from '../i18n';
 import { useCurrency } from '../hooks/useCurrency';
+import { notificationService } from '../services/notification';
+import { paymentStatusService } from '../services/paymentStatus';
 
 import { ThemeColors } from '../theme/ThemeContext';
 
@@ -37,6 +39,7 @@ export const AgendaScreen: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [currencyVersion, setCurrencyVersion] = useState(0);
+  const [paymentStatuses, setPaymentStatuses] = useState<Map<string, PaymentStatus>>(new Map());
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -45,8 +48,61 @@ export const AgendaScreen: React.FC = () => {
     try {
       const data = await storageService.getPayments();
       setPayments(data);
+      
+      // Load payment statuses for selected month
+      await loadPaymentStatuses();
+      
+      // Schedule notifications for all payments
+      await notificationService.scheduleAllPaymentNotifications(data);
     } catch (error) {
       Alert.alert(t.error.title, t.error.loadPayments);
+    }
+  };
+
+  const loadPaymentStatuses = async () => {
+    try {
+      const statuses = new Map<string, PaymentStatus>();
+      const monthStatuses = await paymentStatusService.getMonthStatuses(year, month);
+      
+      // Convert to a format we can use
+      monthStatuses.forEach((statusList, date) => {
+        statusList.forEach(status => {
+          const key = `${status.paymentId}-${date}`;
+          statuses.set(key, status.status);
+        });
+      });
+      
+      setPaymentStatuses(statuses);
+    } catch (error) {
+      console.error('Error loading payment statuses:', error);
+    }
+  };
+
+  const handleMarkStatus = async (
+    occurrence: PaymentOccurrence,
+    status: PaymentStatus
+  ) => {
+    try {
+      await paymentStatusService.setStatus(
+        occurrence.payment.id,
+        occurrence.date,
+        status
+      );
+      
+      // Reload statuses
+      await loadPaymentStatuses();
+      
+      // Show feedback
+      const message = status === 'paid' 
+        ? t.status.markedPaid
+        : status === 'skipped'
+        ? t.status.markedSkipped
+        : t.status.markedPending;
+      
+      // Update notifications
+      await notificationService.scheduleAllPaymentNotifications(payments);
+    } catch (error) {
+      Alert.alert(t.error.title, 'Failed to update payment status');
     }
   };
 
@@ -57,6 +113,11 @@ export const AgendaScreen: React.FC = () => {
       setCurrencyVersion(prev => prev + 1);
     }, [])
   );
+
+  // Reload statuses when month changes
+  React.useEffect(() => {
+    loadPaymentStatuses();
+  }, [year, month]);
 
   const paymentsByDay = getPaymentsByDay(payments, year, month);
   const monthlyTotal = calculateMonthlyTotal(payments, year, month);
@@ -74,6 +135,11 @@ export const AgendaScreen: React.FC = () => {
   const renderCalendar = () => {
     const daysInMonth = getDaysInMonth(year, month);
     const firstDayOfMonth = new Date(year, month, 1).getDay();
+    
+    // Get today's date for highlighting
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+    const currentDayOfMonth = today.getDate();
     
     const weeks: (number | null)[][] = [];
     let currentWeek: (number | null)[] = [];
@@ -121,9 +187,45 @@ export const AgendaScreen: React.FC = () => {
 
               const hasPayments = paymentsByDay.has(day);
               const isSelected = selectedDay === day;
+              const isToday = isCurrentMonth && day === currentDayOfMonth;
               const dayTotal = hasPayments
                 ? calculateDailyTotal(paymentsByDay.get(day)!)
                 : 0;
+
+              // Calculate status color for this day
+              let statusColor = null;
+              if (hasPayments) {
+                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayPaymentsList = paymentsByDay.get(day)!;
+                
+                // Check statuses of all payments on this day
+                let allPaid = true;
+                let anyPaid = false;
+                let anySkipped = false;
+                
+                dayPaymentsList.forEach(occurrence => {
+                  const statusKey = `${occurrence.payment.id}-${dateKey}`;
+                  const status = paymentStatuses.get(statusKey) || 'pending';
+                  
+                  if (status === 'paid') {
+                    anyPaid = true;
+                  } else if (status === 'skipped') {
+                    anySkipped = true;
+                    allPaid = false;
+                  } else {
+                    allPaid = false;
+                  }
+                });
+                
+                // Determine color based on statuses
+                if (allPaid && anyPaid) {
+                  statusColor = '#10b981'; // Green - all paid
+                } else if (anyPaid) {
+                  statusColor = '#3b82f6'; // Blue - partially paid
+                } else if (anySkipped) {
+                  statusColor = '#f59e0b'; // Orange - has skipped
+                }
+              }
 
               return (
                 <TouchableOpacity
@@ -131,21 +233,30 @@ export const AgendaScreen: React.FC = () => {
                   style={[
                     styles.dayCell,
                     hasPayments && styles.dayCellWithPayments,
+                    isToday && styles.dayCellToday,
                     isSelected && styles.dayCellSelected,
+                    statusColor && { backgroundColor: statusColor + '20' }, // Add transparency
                   ]}
                   onPress={() => setSelectedDay(day)}
                 >
+                  {statusColor && !isSelected && (
+                    <View style={[styles.statusIndicator, { backgroundColor: statusColor }]} />
+                  )}
                   <Text
                     style={[
                       styles.dayNumber,
                       hasPayments && styles.dayNumberWithPayments,
+                      isToday && styles.dayNumberToday,
                       isSelected && styles.dayNumberSelected,
                     ]}
                   >
                     {day}
                   </Text>
                   {hasPayments && (
-                    <Text style={styles.dayAmount}>
+                    <Text style={[
+                      styles.dayAmount,
+                      isSelected && styles.dayAmountSelected,
+                    ]}>
                       {formatCurrency(dayTotal)}
                     </Text>
                   )}
@@ -193,13 +304,24 @@ export const AgendaScreen: React.FC = () => {
           </Text>
         </View>
         <ScrollView style={styles.selectedDayPayments}>
-          {dayPayments.map((occurrence, index) => (
-            <PaymentCard
-              key={`${occurrence.payment.id}-${index}-${currencyVersion}`}
-              payment={occurrence.payment}
-              showActions={false}
-            />
-          ))}
+          {dayPayments.map((occurrence, index) => {
+            const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+            const statusKey = `${occurrence.payment.id}-${dateKey}`;
+            const status = paymentStatuses.get(statusKey) || 'pending';
+            
+            return (
+              <PaymentCard
+                key={`${occurrence.payment.id}-${index}-${currencyVersion}`}
+                payment={occurrence.payment}
+                showActions={false}
+                showStatusActions={true}
+                status={status}
+                onMarkAsPaid={() => handleMarkStatus(occurrence, 'paid')}
+                onMarkAsSkipped={() => handleMarkStatus(occurrence, 'skipped')}
+                onMarkAsPending={() => handleMarkStatus(occurrence, 'pending')}
+              />
+            );
+          })}
         </ScrollView>
       </View>
     );
@@ -344,9 +466,23 @@ const getStyles = (colors: ThemeColors, isDark: boolean) => StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     margin: 2,
+    position: 'relative',
+  },
+  statusIndicator: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   dayCellWithPayments: {
     backgroundColor: colors.highlight,
+  },
+  dayCellToday: {
+    borderWidth: 2,
+    borderColor: colors.primary,
+    backgroundColor: isDark ? 'rgba(79, 70, 229, 0.2)' : 'rgba(79, 70, 229, 0.1)',
   },
   dayCellSelected: {
     backgroundColor: colors.primary,
@@ -359,6 +495,10 @@ const getStyles = (colors: ThemeColors, isDark: boolean) => StyleSheet.create({
   dayNumberWithPayments: {
     color: colors.primary,
   },
+  dayNumberToday: {
+    color: colors.primary,
+    fontWeight: '700',
+  },
   dayNumberSelected: {
     color: colors.card,
   },
@@ -366,6 +506,9 @@ const getStyles = (colors: ThemeColors, isDark: boolean) => StyleSheet.create({
     fontSize: 10,
     color: colors.primary,
     marginTop: 2,
+  },
+  dayAmountSelected: {
+    color: colors.card,
   },
   selectedDayContainer: {
     backgroundColor: colors.card,

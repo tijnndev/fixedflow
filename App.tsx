@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import { SettingsScreen } from './src/screens/SettingsScreen';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { I18nProvider, useI18n } from './src/i18n';
 import { BiometricLock } from './src/components/BiometricLock';
+import { notificationService } from './src/services/notification';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,6 +17,14 @@ function AppContent() {
   const { colors, isDark } = useTheme();
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
+
+  // Request notification permissions on app start
+  useEffect(() => {
+    const requestPermissions = async () => {
+      await notificationService.requestNotificationPermissions();
+    };
+    requestPermissions();
+  }, []);
 
   // Calculate safe area padding for tab bar
   const bottomPadding = Math.max(insets.bottom, 8);

@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RecurringPayment } from '../types/payment';
+import { paymentStatusService } from './paymentStatus';
 
 const STORAGE_KEY = '@fixedflow_payments';
 
@@ -69,6 +70,9 @@ export const storageService = {
     const payments = await this.getPayments();
     const filtered = payments.filter(p => p.id !== id);
     await this.savePayments(filtered);
+    
+    // Also delete associated payment statuses
+    await paymentStatusService.deletePaymentStatuses(id);
   },
 
   /**

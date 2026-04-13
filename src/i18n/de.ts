@@ -68,6 +68,7 @@ export const de = {
     monthly: 'Monatlich',
     quarterly: 'Vierteljährlich',
     yearly: 'Jährlich',
+    installments: '3 Monate',
     dueDay: 'Fälligkeitstag (1-31)',
     dueDayPlaceholder: '1',
     startDate: 'Startdatum',
@@ -114,6 +115,19 @@ export const de = {
     deletePaymentMessage: 'Möchten Sie wirklich löschen',
     deleteCategoryTitle: 'Kategorie Löschen',
     deleteCategoryMessage: 'Möchten Sie diese Kategorie wirklich löschen?',
+  },
+
+  // Payment Status
+  status: {
+    pending: 'Ausstehend',
+    paid: 'Bezahlt',
+    skipped: 'Übersprungen',
+    markAsPaid: 'Als Bezahlt Markieren',
+    markAsSkipped: 'Als Übersprungen Markieren',
+    markAsPending: 'Als Ausstehend Markieren',
+    markedPaid: 'Zahlung als bezahlt markiert',
+    markedSkipped: 'Zahlung als übersprungen markiert',
+    markedPending: 'Zahlung als ausstehend markiert',
   },
 
   // Days of week

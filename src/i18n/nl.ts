@@ -68,6 +68,7 @@ export const nl = {
     monthly: 'Maandelijks',
     quarterly: 'Kwartaal',
     yearly: 'Jaarlijks',
+    installments: '3 Maanden',
     dueDay: 'Vervaldatum (1-31)',
     dueDayPlaceholder: '1',
     startDate: 'Startdatum',
@@ -114,6 +115,19 @@ export const nl = {
     deletePaymentMessage: 'Weet je zeker dat je wilt verwijderen',
     deleteCategoryTitle: 'Categorie Verwijderen',
     deleteCategoryMessage: 'Weet je zeker dat je deze categorie wilt verwijderen?',
+  },
+
+  // Payment Status
+  status: {
+    pending: 'Openstaand',
+    paid: 'Betaald',
+    skipped: 'Overgeslagen',
+    markAsPaid: 'Markeer als Betaald',
+    markAsSkipped: 'Markeer als Overgeslagen',
+    markAsPending: 'Markeer als Openstaand',
+    markedPaid: 'Betaling gemarkeerd als betaald',
+    markedSkipped: 'Betaling gemarkeerd als overgeslagen',
+    markedPending: 'Betaling gemarkeerd als openstaand',
   },
 
   // Days of week
