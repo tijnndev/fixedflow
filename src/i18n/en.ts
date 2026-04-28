@@ -20,6 +20,7 @@ export const en = {
   agenda: {
     title: 'Payment Calendar',
     totalMonth: 'Total this month:',
+    stillToPay: 'Still to pay:',
     selectDay: 'Select a day to view payments',
     noPaymentsOn: 'No payments on',
     total: 'Total:',

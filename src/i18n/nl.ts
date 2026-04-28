@@ -20,6 +20,7 @@ export const nl = {
   agenda: {
     title: 'Betalingskalender',
     totalMonth: 'Totaal deze maand:',
+    stillToPay: 'Nog te betalen:',
     selectDay: 'Selecteer een dag om betalingen te bekijken',
     noPaymentsOn: 'Geen betalingen op',
     total: 'Totaal:',

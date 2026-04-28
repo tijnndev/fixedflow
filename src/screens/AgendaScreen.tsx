@@ -13,6 +13,7 @@ import { RecurringPayment, PaymentOccurrence, PaymentStatus } from '../types/pay
 import { storageService } from '../services/storage';
 import {
   getPaymentsByDay,
+  getPaymentOccurrencesForMonth,
   calculateMonthlyTotal,
   calculateDailyTotal,
   getDaysInMonth,
@@ -121,6 +122,17 @@ export const AgendaScreen: React.FC = () => {
 
   const paymentsByDay = getPaymentsByDay(payments, year, month);
   const monthlyTotal = calculateMonthlyTotal(payments, year, month);
+
+  // Calculate subtotal of payments still pending (not paid/skipped) this month
+  const pendingSubtotal = (() => {
+    const occurrences = getPaymentOccurrencesForMonth(payments, year, month);
+    return occurrences.reduce((sum, occurrence) => {
+      const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(occurrence.date.getDate()).padStart(2, '0')}`;
+      const statusKey = `${occurrence.payment.id}-${dateKey}`;
+      const status = paymentStatuses.get(statusKey) || 'pending';
+      return status === 'pending' ? sum + occurrence.payment.amount : sum;
+    }, 0);
+  })();
 
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
@@ -233,9 +245,9 @@ export const AgendaScreen: React.FC = () => {
                   style={[
                     styles.dayCell,
                     hasPayments && styles.dayCellWithPayments,
+                    statusColor && !isSelected && { backgroundColor: statusColor + '20' },
                     isToday && styles.dayCellToday,
                     isSelected && styles.dayCellSelected,
-                    statusColor && { backgroundColor: statusColor + '20' }, // Add transparency
                   ]}
                   onPress={() => setSelectedDay(day)}
                 >
@@ -359,8 +371,15 @@ export const AgendaScreen: React.FC = () => {
         </View>
 
         <View style={styles.totalContainer}>
-          <Text style={styles.totalLabel}>{t.agenda.totalMonth}</Text>
-          <Text style={styles.totalAmount}>{formatCurrency(monthlyTotal)}</Text>
+          <View style={styles.totalSubtotalRow}>
+            <Text style={styles.subtotalLabel}>{t.agenda.stillToPay}</Text>
+            <Text style={styles.subtotalAmount}>{formatCurrency(pendingSubtotal)}</Text>
+          </View>
+          <View style={styles.totalDivider} />
+          <View style={styles.totalMonthRow}>
+            <Text style={styles.totalLabel}>{t.agenda.totalMonth}</Text>
+            <Text style={styles.totalAmount}>{formatCurrency(monthlyTotal)}</Text>
+          </View>
         </View>
       </View>
 
@@ -414,22 +433,46 @@ const getStyles = (colors: ThemeColors, isDark: boolean) => StyleSheet.create({
     userSelect: "none"
   },
   totalContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     backgroundColor: colors.highlight,
     padding: 16,
     borderRadius: 10,
   },
+  totalSubtotalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  subtotalLabel: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  subtotalAmount: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: colors.primary,
+  },
+  totalDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginBottom: 8,
+    opacity: 0.5,
+  },
+  totalMonthRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   totalLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.highlightText,
+    fontSize: 13,
+    fontWeight: '500',
+    color: colors.textSecondary,
   },
   totalAmount: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.primary,
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textSecondary,
   },
   content: {
     flex: 1,

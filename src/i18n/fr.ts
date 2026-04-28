@@ -20,6 +20,7 @@ export const fr = {
   agenda: {
     title: 'Calendrier des Paiements',
     totalMonth: 'Total ce mois:',
+    stillToPay: 'Reste à payer:',
     selectDay: 'Sélectionnez un jour pour voir les paiements',
     noPaymentsOn: 'Aucun paiement le',
     total: 'Total:',
