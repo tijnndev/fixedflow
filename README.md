@@ -4,7 +4,7 @@
 
 ![FixedFlow Logo](assets/logo.svg)
 
-📱 **A simple, offline-first personal finance app for tracking recurring payments**
+**A simple, offline-first personal finance app for tracking recurring payments**
 
 ![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android%20%7C%20Web-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -13,20 +13,20 @@
 
 </div>
 
-## 📖 Overview
+## Overview
 
 FixedFlow is a clean, minimal mobile app designed to help you track and visualize your recurring payments (subscriptions, rent, insurance, etc.). All data is stored locally on your device - no backend, no accounts, no data collection.
 
-### ✨ Features
+### Features
 
-- **📋 List View**: Manage all your recurring payments in one place
+- **List View**: Manage all your recurring payments in one place
   - Add, edit, and delete payments with a floating action button
   - Quick overview of all subscriptions
   - Sort and organize by category
   - Pull to refresh
   - Empty state with helpful prompts
 
-- **📅 Agenda View**: Calendar-style monthly overview
+- **Agenda View**: Calendar-style monthly overview
   - Visualize payments on their due dates
   - Navigate between months with smooth transitions
   - See daily and monthly totals
@@ -34,24 +34,26 @@ FixedFlow is a clean, minimal mobile app designed to help you track and visualiz
   - Tap days to see payment details
   - Color-coded calendar interface
 
-- **⚙️ Settings & Customization**
-  - **🎨 Dark Mode**: Choose between Light, Dark, or System theme
-  - **🌍 Multi-Language Support**: English, Dutch, French, and German
-  - **📂 Custom Categories**: Create, edit, and delete payment categories
-  - **💾 Persistent Preferences**: All settings saved locally
+- **Settings & Customization**
+  - **Dark Mode**: Choose between Light, Dark, or System theme
+  - **Multi-Language Support**: English, Dutch, French, and German
+  - **Custom Categories**: Create, edit, and delete payment categories
+  - **Month Period**: Define which days count as one month (e.g. 25th to 24th)
+  - **Persistent Preferences**: All settings saved locally
 
-- **💾 Fully Offline**: All data stored locally using AsyncStorage
-- **🔒 Privacy First**: No backend, no tracking, no data collection
-- **🎨 Modern UI**: Clean, intuitive design with smooth animations
-- **📱 Responsive**: Works on phones and tablets
-- **♿ Accessible**: Safe area support for notched devices
-- **💶 EUR Currency**: Built for European users (easily customizable)
+- **Fully Offline**: All data stored locally using AsyncStorage
+- **Privacy First**: No backend, no tracking, no data collection
+- **Modern UI**: Clean, intuitive design with smooth animations
+- **Responsive**: Works on phones and tablets
+- **Accessible**: Safe area support for notched devices
+- **Multi-Currency**: Built for European users (easily customizable)
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v16 or later)
+- [Java 17](https://java.oracle.com/java-se/17/) (required for Android builds)
 - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 - [Expo Go](https://expo.dev/client) app on your mobile device (for testing)
@@ -84,7 +86,7 @@ FixedFlow is a clean, minimal mobile app designed to help you track and visualiz
    - Scan the QR code with Expo Go (Android) or Camera app (iOS)
    - Or press `a` for Android emulator, `i` for iOS simulator
 
-## 📱 Usage
+## Usage
 
 ### Adding a Payment
 
@@ -142,7 +144,7 @@ FixedFlow is a clean, minimal mobile app designed to help you track and visualiz
 4. View **monthly total** at the top of the screen
 5. Days with payments are highlighted in blue
 
-## 🔄 Recurrence Logic
+## Recurrence Logic
 
 FixedFlow uses a clear, predictable system for recurring payments:
 
@@ -162,7 +164,7 @@ FixedFlow uses a clear, predictable system for recurring payments:
 ### Edge Cases
 - If due day exceeds days in month (e.g., day 31 in February), the payment is scheduled for the last day of that month
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 fixedflow/
@@ -218,7 +220,7 @@ fixedflow/
 └── LICENSE
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: [React Native](https://reactnative.dev/) with [Expo](https://expo.dev/) SDK 55
 - **Language**: [TypeScript](https://www.typescriptlang.org/) 5.3
@@ -229,7 +231,7 @@ fixedflow/
 - **Screens**: [react-native-screens](https://github.com/software-mansion/react-native-screens) v4.10
 - **Build Tools**: [Sharp](https://sharp.pixelplumbing.com/) for icon generation
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! This is an open-source project designed to help people track their finances.
 
@@ -249,7 +251,7 @@ Contributions are welcome! This is an open-source project designed to help peopl
 - Test on both iOS and Android when possible
 - Keep the UI simple and accessible
 
-## 🐛 Known Issues & Limitations
+## Known Issues & Limitations
 
 - **Currency**: Currently hardcoded to EUR (€) - multi-currency support planned
 - **Notifications**: No reminder notifications yet - see [suggestions.md](suggestions.md)
@@ -258,17 +260,17 @@ Contributions are welcome! This is an open-source project designed to help peopl
 
 See [suggestions.md](suggestions.md) for the full feature roadmap and planned improvements.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- Built with ❤️ using Expo and React Native
+- Built with Expo and React Native
 - Icons by [@expo/vector-icons](https://icons.expo.fyi/)
 - Inspired by the need for simple, privacy-focused financial tools
 
-## 📧 Contact & Support
+## Contact & Support
 
 - **Issues**: [GitHub Issues](https://github.com/tijnndev/fixedflow/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/tijnndev/fixedflow/discussions)
@@ -277,8 +279,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Made with ☕ for people who value simplicity and privacy**
+**Made for people who value simplicity and privacy**
 
-[⭐ Star this repo](https://github.com/tijnndev/fixedflow) if you find it useful!
+[Star this repo](https://github.com/tijnndev/fixedflow) if you find it useful!
 
 </div>
