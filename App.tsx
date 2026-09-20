@@ -1,6 +1,8 @@
+import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ListScreen } from './src/screens/ListScreen';
@@ -21,7 +23,11 @@ function AppContent() {
   // Request notification permissions on app start
   useEffect(() => {
     const requestPermissions = async () => {
-      await notificationService.requestNotificationPermissions();
+      try {
+        await notificationService.requestNotificationPermissions();
+      } catch (error) {
+        console.error('Error requesting notification permissions:', error);
+      }
     };
     requestPermissions();
   }, []);
@@ -29,17 +35,20 @@ function AppContent() {
   // Calculate safe area padding for tab bar
   const bottomPadding = Math.max(insets.bottom, 8);
 
+  const baseTheme = isDark ? DarkTheme : DefaultTheme;
+
   return (
     <NavigationContainer theme={{
-      dark: isDark,
+      ...baseTheme,
       colors: {
+        ...baseTheme.colors,
         primary: colors.primary,
         background: colors.background,
         card: colors.card,
         text: colors.text,
         border: colors.border,
         notification: colors.error,
-      }
+      },
     }}>
       <Tab.Navigator
         screenOptions={{
@@ -98,14 +107,16 @@ function AppContent() {
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <I18nProvider>
-        <ThemeProvider>
-          <BiometricLock>
-            <AppContent />
-          </BiometricLock>
-        </ThemeProvider>
-      </I18nProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <I18nProvider>
+          <ThemeProvider>
+            <BiometricLock>
+              <AppContent />
+            </BiometricLock>
+          </ThemeProvider>
+        </I18nProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

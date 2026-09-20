@@ -4,16 +4,19 @@ import { RecurringPayment } from '../types/payment';
 import { getPaymentOccurrencesForMonth, shouldPaymentOccurInMonth } from '../utils/recurrence';
 import { paymentStatusService } from './paymentStatus';
 
-// Configure notification behavior
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+try {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+} catch (error) {
+  console.error('Failed to set notification handler:', error);
+}
 
 /**
  * Request notification permissions

@@ -56,10 +56,14 @@ export const BiometricLock: React.FC<BiometricLockProps> = ({ children }) => {
       );
       
       if (success) {
-        setIsAuthenticated(true);
-      } else {
-        setError('Authentication failed');
+        setTimeout(() => {
+          setIsAuthenticated(true);
+          setIsChecking(false);
+        }, 250);
+        return;
       }
+
+      setError('Authentication failed');
       setIsChecking(false);
     } catch (error) {
       console.error('Authentication error:', error);

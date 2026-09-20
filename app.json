@@ -41,6 +41,23 @@
       "eas": {
         "projectId": "c719dd61-4497-4ec0-a8ef-6a7b2c6d3459"
       }
-    }
+    },
+    "plugins": [
+      "expo-local-authentication",
+      [
+        "expo-notifications",
+        {
+          "color": "#4F46E5"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#4F46E5"
+        }
+      ]
+    ]
   }
 }

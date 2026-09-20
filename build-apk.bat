@@ -4,6 +4,28 @@ echo Building FixedFlow Optimized APK
 echo ========================================
 echo.
 
+if not defined JAVA_HOME (
+    if exist "C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot" (
+        set "JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot"
+    ) else (
+        for /d %%J in ("C:\Program Files\Eclipse Adoptium\jdk-17*") do set "JAVA_HOME=%%~fJ"
+    )
+)
+if defined JAVA_HOME set "PATH=%JAVA_HOME%\bin;%PATH%"
+
+if not defined ANDROID_HOME if exist "%LOCALAPPDATA%\Android\Sdk" set "ANDROID_HOME=%LOCALAPPDATA%\Android\Sdk"
+if not defined ANDROID_SDK_ROOT if defined ANDROID_HOME set "ANDROID_SDK_ROOT=%ANDROID_HOME%"
+
+echo JAVA_HOME=%JAVA_HOME%
+echo ANDROID_HOME=%ANDROID_HOME%
+echo.
+
+if exist scripts\generate-icons.js (
+    echo Generating PNG assets...
+    node scripts\generate-icons.js
+    echo.
+)
+
 REM Navigate to android directory
 cd android
 
