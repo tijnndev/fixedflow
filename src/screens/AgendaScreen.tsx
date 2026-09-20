@@ -27,6 +27,7 @@ import { useI18n } from '../i18n';
 import { useCurrency } from '../hooks/useCurrency';
 import { notificationService } from '../services/notification';
 import { paymentStatusService } from '../services/paymentStatus';
+import { monthPeriodService } from '../services/monthPeriod';
 
 import { ThemeColors } from '../theme/ThemeContext';
 
@@ -41,6 +42,7 @@ export const AgendaScreen: React.FC = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [currencyVersion, setCurrencyVersion] = useState(0);
   const [paymentStatuses, setPaymentStatuses] = useState<Map<string, PaymentStatus>>(new Map());
+  const [monthStartDay, setMonthStartDay] = useState(1);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -49,6 +51,10 @@ export const AgendaScreen: React.FC = () => {
     try {
       const data = await storageService.getPayments();
       setPayments(data);
+      
+      // Load the month period start day
+      const startDay = await monthPeriodService.getStartDay();
+      setMonthStartDay(startDay);
       
       // Load payment statuses for selected month
       await loadPaymentStatuses();
@@ -123,10 +129,17 @@ export const AgendaScreen: React.FC = () => {
   const paymentsByDay = getPaymentsByDay(payments, year, month);
   const monthlyTotal = calculateMonthlyTotal(payments, year, month);
 
-  // Calculate subtotal of payments still pending (not paid/skipped) this month
+  // Month period range (e.g. 25th - 24th when start day is 25)
+  const periodRange = monthPeriodService.getPeriodRange(year, month, monthStartDay);
+
+  // Calculate subtotal of payments still pending (not paid/skipped) within the month period
   const pendingSubtotal = (() => {
     const occurrences = getPaymentOccurrencesForMonth(payments, year, month);
     return occurrences.reduce((sum, occurrence) => {
+      const date = occurrence.date;
+      if (date < periodRange.start || date > periodRange.end) {
+        return sum;
+      }
       const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(occurrence.date.getDate()).padStart(2, '0')}`;
       const statusKey = `${occurrence.payment.id}-${dateKey}`;
       const status = paymentStatuses.get(statusKey) || 'pending';
@@ -375,6 +388,11 @@ export const AgendaScreen: React.FC = () => {
             <Text style={styles.subtotalLabel}>{t.agenda.stillToPay}</Text>
             <Text style={styles.subtotalAmount}>{formatCurrency(pendingSubtotal)}</Text>
           </View>
+          {monthStartDay !== 1 && (
+            <Text style={styles.periodLabel}>
+              {t.agenda.periodRange.replace('{start}', String(periodRange.start.getDate())).replace('{end}', String(periodRange.end.getDate()))}
+            </Text>
+          )}
           <View style={styles.totalDivider} />
           <View style={styles.totalMonthRow}>
             <Text style={styles.totalLabel}>{t.agenda.totalMonth}</Text>
@@ -452,6 +470,12 @@ const getStyles = (colors: ThemeColors, isDark: boolean) => StyleSheet.create({
     fontSize: 28,
     fontWeight: '800',
     color: colors.primary,
+  },
+  periodLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.textSecondary,
+    marginBottom: 8,
   },
   totalDivider: {
     height: 1,

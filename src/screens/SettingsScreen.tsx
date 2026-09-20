@@ -19,6 +19,7 @@ import { useI18n, Language } from '../i18n';
 import { categoriesService } from '../services/categories';
 import { currencyService, Currency, CURRENCIES } from '../services/currency';
 import { biometricService } from '../services/biometric';
+import { monthPeriodService } from '../services/monthPeriod';
 import { Ionicons } from '@expo/vector-icons';
 
 export const SettingsScreen: React.FC = () => {
@@ -35,6 +36,7 @@ export const SettingsScreen: React.FC = () => {
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricType, setBiometricType] = useState('Biometric');
+  const [monthStartDay, setMonthStartDay] = useState(1);
 
   const loadSettings = async () => {
     try {
@@ -53,6 +55,10 @@ export const SettingsScreen: React.FC = () => {
         const type = await biometricService.getBiometricTypeName();
         setBiometricType(type);
       }
+
+      // Load month period setting
+      const startDay = await monthPeriodService.getStartDay();
+      setMonthStartDay(startDay);
     } catch (error) {
       Alert.alert(t.error.title, t.error.loadSettings);
     }
@@ -83,6 +89,16 @@ export const SettingsScreen: React.FC = () => {
       await currencyService.setCurrency(selectedCurrency.code);
       setCurrencyState(selectedCurrency);
       setShowCurrencyPicker(false);
+    } catch (error) {
+      Alert.alert(t.error.title, t.error.saveSettings);
+    }
+  };
+
+  const handleMonthStartDayChange = async (value: number) => {
+    const day = Math.min(31, Math.max(1, value));
+    setMonthStartDay(day);
+    try {
+      await monthPeriodService.setStartDay(day);
     } catch (error) {
       Alert.alert(t.error.title, t.error.saveSettings);
     }
@@ -195,6 +211,44 @@ export const SettingsScreen: React.FC = () => {
               </View>
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Month Period Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t.settings.monthPeriod}</Text>
+          
+          <View style={styles.settingGroup}>
+            <Text style={styles.settingDescription}>{t.settings.monthPeriodDesc}</Text>
+            <View style={styles.monthPeriodRow}>
+              <Text style={styles.settingLabel}>
+                {t.settings.monthPeriodStartDay}
+              </Text>
+              <View style={styles.monthPeriodStepper}>
+                <TouchableOpacity
+                  style={[styles.monthPeriodStepButton, monthStartDay <= 1 && styles.monthPeriodStepButtonDisabled]}
+                  onPress={() => handleMonthStartDayChange(monthStartDay - 1)}
+                  disabled={monthStartDay <= 1}
+                >
+                  <Ionicons name="remove" size={20} color={monthStartDay <= 1 ? colors.textSecondary : colors.primary} />
+                </TouchableOpacity>
+                <Text style={styles.monthPeriodStepValue}>{monthStartDay}</Text>
+                <TouchableOpacity
+                  style={[styles.monthPeriodStepButton, monthStartDay >= 31 && styles.monthPeriodStepButtonDisabled]}
+                  onPress={() => handleMonthStartDayChange(monthStartDay + 1)}
+                  disabled={monthStartDay >= 31}
+                >
+                  <Ionicons name="add" size={20} color={monthStartDay >= 31 ? colors.textSecondary : colors.primary} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            {monthStartDay !== 1 && (
+              <Text style={styles.settingDescription}>
+                {t.settings.monthPeriodRange
+                  .replace('{start}', String(monthStartDay))
+                  .replace('{end}', String(monthStartDay - 1))}
+              </Text>
+            )}
           </View>
         </View>
 
@@ -535,6 +589,35 @@ const getStyles = (colors: ThemeColors, isDark: boolean) => StyleSheet.create({
   },
   biometricInfo: {
     flex: 1,
+  },
+  monthPeriodRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  monthPeriodStepper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  monthPeriodStepButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  monthPeriodStepButtonDisabled: {
+    opacity: 0.4,
+  },
+  monthPeriodStepValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.primary,
+    minWidth: 28,
+    textAlign: 'center',
   },
   modalOverlay: {
     flex: 1,

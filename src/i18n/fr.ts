@@ -21,6 +21,7 @@ export const fr = {
     title: 'Calendrier des Paiements',
     totalMonth: 'Total ce mois:',
     stillToPay: 'Reste à payer:',
+    periodRange: 'Période : {start} - {end}',
     selectDay: 'Sélectionnez un jour pour voir les paiements',
     noPaymentsOn: 'Aucun paiement le',
     total: 'Total:',
@@ -55,6 +56,10 @@ export const fr = {
     cancel: 'Annuler',
     add: 'Ajouter',
     allCategories: 'Toutes les Catégories',
+    monthPeriod: 'Période mensuelle',
+    monthPeriodDesc: 'Définit quels jours comptent comme un mois pour les totaux comme "Reste à payer". Par défaut, un mois va du 1er au dernier jour. Définissez un jour de début (ex. 25) pour compter du 25 au 24.',
+    monthPeriodStartDay: 'Le mois commence le jour',
+    monthPeriodRange: 'Compte du {start} au {end}',
   },
 
   // Payment Form

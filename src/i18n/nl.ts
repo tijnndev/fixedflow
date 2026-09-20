@@ -21,6 +21,7 @@ export const nl = {
     title: 'Betalingskalender',
     totalMonth: 'Totaal deze maand:',
     stillToPay: 'Nog te betalen:',
+    periodRange: 'Periode: {start} - {end}',
     selectDay: 'Selecteer een dag om betalingen te bekijken',
     noPaymentsOn: 'Geen betalingen op',
     total: 'Totaal:',
@@ -55,6 +56,10 @@ export const nl = {
     cancel: 'Annuleren',
     add: 'Toevoegen',
     allCategories: 'Alle Categorieën',
+    monthPeriod: 'Maandperiode',
+    monthPeriodDesc: 'Bepaalt welke dagen als één maand tellen voor totalen zoals "Nog te betalen". Standaard loopt een maand van de 1e tot de laatste dag. Stel een startdag in (bijv. 25) om van de 25e tot en met de 24e te tellen.',
+    monthPeriodStartDay: 'Maand begint op dag',
+    monthPeriodRange: 'Telt van de {start} tot en met de {end}',
   },
 
   // Payment Form

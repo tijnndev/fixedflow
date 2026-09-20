@@ -21,6 +21,7 @@ export const de = {
     title: 'Zahlungskalender',
     totalMonth: 'Gesamt diesen Monat:',
     stillToPay: 'Noch zu zahlen:',
+    periodRange: 'Zeitraum: {start} - {end}',
     selectDay: 'Wählen Sie einen Tag, um Zahlungen anzuzeigen',
     noPaymentsOn: 'Keine Zahlungen am',
     total: 'Gesamt:',
@@ -55,6 +56,10 @@ export const de = {
     cancel: 'Abbrechen',
     add: 'Hinzufügen',
     allCategories: 'Alle Kategorien',
+    monthPeriod: 'Monatszeitraum',
+    monthPeriodDesc: 'Bestimmt, welche Tage als ein Monat für Summen wie "Noch zu zahlen" zählen. Standardmäßig läuft ein Monat vom 1. bis zum letzten Tag. Setzen Sie einen Starttag (z. B. 25), um vom 25. bis zum 24. zu zählen.',
+    monthPeriodStartDay: 'Monat beginnt am Tag',
+    monthPeriodRange: 'Zählt vom {start} bis zum {end}',
   },
 
   // Payment Form

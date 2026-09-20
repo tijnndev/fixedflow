@@ -21,6 +21,7 @@ export const en = {
     title: 'Payment Calendar',
     totalMonth: 'Total this month:',
     stillToPay: 'Still to pay:',
+    periodRange: 'Period: {start} - {end}',
     selectDay: 'Select a day to view payments',
     noPaymentsOn: 'No payments on',
     total: 'Total:',
@@ -55,6 +56,10 @@ export const en = {
     cancel: 'Cancel',
     add: 'Add',
     allCategories: 'All Categories',
+    monthPeriod: 'Month Period',
+    monthPeriodDesc: 'Defines which days count as one month for totals like "Still to pay". By default a month runs from the 1st to the last day. Set a start day (e.g. 25) to count from the 25th until the 24th.',
+    monthPeriodStartDay: 'Month starts on day',
+    monthPeriodRange: 'Counts from the {start} to the {end}',
   },
 
   // Payment Form
